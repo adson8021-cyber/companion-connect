@@ -1,24 +1,31 @@
-# Companion Connect
+# Academia — Área de Membros
 
-.
+Plataforma de cursos online com uma experiência profissional para alunos.
 
-This project was built with [Lovable](https://lovable.dev).
+## Experiência atual
 
-## Build with Lovable
+- A primeira página apresenta criação de conta; os alunos já registados podem iniciar sessão.
+- Área do aluno com resumo de progresso e biblioteca de cursos.
+- Página de curso com lista de aulas, progresso e leitor para YouTube, Vimeo ou URL de vídeo MP4.
+- Gestão de conteúdos para criar cursos e adicionar videoaulas através de links.
+- Interface adaptável a telemóveis e computadores, com azul-escuro e verde como cores principais.
 
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/2a1e3c9c-ab50-4a5e-a9c5-3071f6a284ad).
+## Executar localmente
 
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
-
-## Development
-
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+Requisitos: Node.js e npm.
 
 ```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
+npm install
 npm run dev
 ```
+
+Para validar a compilação:
+
+```sh
+npm run build
+```
+
+## Importante antes de lançar publicamente
+
+Esta versão é um protótipo de interface. A autenticação de demonstração e os dados são guardados no armazenamento local do navegador; não constituem um sistema de contas seguro e não sincronizam entre dispositivos. Não utilizar com palavras-passe reais nem para vender cursos até integrar um serviço de autenticação, uma base de dados e permissões no servidor. Os links de vídeo precisam de estar alojados num serviço acessível; esta aplicação não faz upload nem armazenamento dos ficheiros de vídeo.
+
