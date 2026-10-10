@@ -152,6 +152,7 @@ function Academy() {
             {authError && <p className="auth-error" role="alert">{authError}</p>}
             <button className="auth-submit" type="submit">{authMode === "signup" ? "Criar conta" : "Entrar na área de membros"} <ArrowRight size={17} /></button>
           </form>
+          <button className="auth-demo-button" type="button" onClick={() => { setUser({ name: "Visitante", email: "demo@academia.local" }); setView("overview"); setAuthError(""); }}>Explorar demonstração sem criar conta <ArrowRight size={16} /></button>
           <div className="auth-switch">{authMode === "signup" ? "Já tens conta?" : "Ainda não tens conta?"} <button onClick={() => { setAuthMode(authMode === "signup" ? "login" : "signup"); setAuthError(""); }}>{authMode === "signup" ? "Inicia sessão" : "Criar conta"}</button></div>
           <div className="auth-privacy"><LockKeyhole size={14} /> A tua aprendizagem começa num espaço dedicado.</div>
         </div>
