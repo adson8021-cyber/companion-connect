@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import "../member-area.css";
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import {
   ArrowUpRight, BookOpen, CheckCircle2, ChevronRight, CircleUserRound,
