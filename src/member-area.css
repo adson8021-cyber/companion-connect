@@ -6,3 +6,90 @@
 .auth-demo-button{width:100%;min-height:45px;margin-top:12px;display:flex;align-items:center;justify-content:center;gap:9px;border:1px solid #cbdcd0;border-radius:8px;background:transparent;color:var(--navy);font-size:12px;font-weight:750;padding:12px}.auth-demo-button:hover{background:#e5f3e9;border-color:#9fc9ad}.auth-demo-button svg{color:var(--green)}
 
 .auth-admin-link{display:block;width:100%;margin-top:15px;border:0;background:transparent;color:#60766a;font-size:11px;font-weight:750;text-decoration:underline;text-underline-offset:3px}.auth-admin-link:hover{color:var(--green)}.admin-role-pill{border:1px solid #b8d8c2;background:#e2f2e7;color:#24764e;padding:5px 7px;border-radius:4px;font-size:9px;font-weight:850;letter-spacing:.8px}
+
+
+/* MEMBRS-inspired member experience: original dark/neon-green visual identity */
+:root{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#f5f7f6;background:#030504;--navy:#050706;--navy-deep:#000;--green:#00e69a;--mint:#05271c;--muted:#929894;--line:#1b211e;--panel:#0a0d0b}
+body{background:#030504;color:#f5f7f6}
+.academy-app{min-height:100vh;background:#030504;color:#f5f7f6}
+.academy-sidebar{background:#050706;border-right:1px solid #171b19;color:#f5f7f6}
+.academy-brand{color:#f7f8f7}
+.brand-icon{background:#050706;border:1px solid #343b36;color:#f7f8f7;box-shadow:0 0 18px #00e69a12}
+.brand-subtitle,.side-label,.metric-label,.course-small-meta,.course-progress-copy,.academy-footer{color:#858d88}
+.side-link{color:#a7ada9;border-radius:10px}
+.side-link:hover,.side-link-active{background:#0b2118;color:#00e69a}
+.side-count,.admin-role-pill{background:#073d2a;color:#00e69a;border:1px solid #07583b}
+.academy-main{background:#030504}
+.academy-topbar{background:#050706eF;border-bottom:1px solid #171b19;color:#f5f7f6}
+.page-intro h1,.content-heading h2,.metric-card strong,.professional-course-body h3,.lesson-list-head h3,.video-information h2{color:#f7f8f7}
+.page-intro p,.content-heading p,.professional-course-body p,.lesson-list-head p,.video-information p{color:#929894}
+.section-eyebrow{color:#00e69a;letter-spacing:.14em}
+.metric-card,.professional-course-card,.manage-panel,.manage-course-list,.video-panel,.lesson-list{background:#080b09;border:1px solid #1b211e;box-shadow:none;color:#f4f6f5}
+.metric-icon,.manage-icon{background:#0a2118;color:#00e69a}
+.metric-icon-green{background:#073d2a;color:#00e69a}
+.metric-progress,.course-progress-bar,.course-progress-track{background:#202521}
+.metric-progress span,.course-progress-bar span{background:#00e69a}
+.button-primary{background:#00e69a;color:#00180f;border:0;border-radius:999px;font-weight:700}
+.button-primary:hover{background:#4dffbd}
+.text-link,.back-link{color:#00e69a}
+.course-band{background:radial-gradient(ellipse at 50% 10%,#08734d 0,#073b2a 35%,#07120d 75%,#050706 100%);min-height:180px;border:0;position:relative;overflow:hidden}
+.course-band:after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 27px,#00e69a0b 28px 29px),linear-gradient(0deg,#020403e8,transparent 75%);pointer-events:none}
+.course-band-icon{color:#00e69a;opacity:.85}
+.course-category{background:#03160e;color:#00e69a;border:1px solid #00e69a50}
+.professional-course-body{background:#080b09}
+.course-open-button{background:#f5f7f6;color:#050706;border-radius:999px}
+.course-open-button:hover{background:#00e69a}
+.course-search{background:#090c0a;border-color:#222a25;color:#00e69a}
+.course-search input,.manage-form input,.manage-form textarea,.manage-form select{background:#050706;border:1px solid #29312b;color:#f5f7f6;border-radius:10px}
+.manage-form label,.manage-panel-title h2,.manage-course-copy strong{color:#f5f7f6}
+.manage-form small,.manage-panel-title p,.manage-course-copy small{color:#929894}
+.manage-course-row{border-color:#1b211e}
+.storage-warning{background:#0b1710;border-color:#20372a;color:#a7b5ab}
+.empty-library,.empty-lessons{color:#929894}
+.video-screen{background:#000;border-bottom:1px solid #1b211e;aspect-ratio:16/9}
+.video-screen iframe,.video-screen video{width:100%;height:100%;border:0;display:block}
+.video-placeholder{background:radial-gradient(ellipse at center,#09271a,#020403 72%);color:#f7f8f7}
+.video-play{background:#00e69a;color:#00180f;box-shadow:0 0 32px #00e69a2a}
+.video-information{background:#080b09}
+.video-actions{color:#929894}
+.button-complete{background:#0a2017;color:#00e69a;border:1px solid #14563b;border-radius:999px}
+.button-complete.is-done{background:#00e69a;color:#00180f}
+.lesson-list-head{border-bottom:1px solid #1b211e}
+.lesson-list-head>span{color:#00e69a}
+.lesson-row{background:transparent;color:#f4f6f5;border-bottom:1px solid #181d1a}
+.lesson-row:hover,.lesson-row-active{background:#0a1c13}
+.lesson-index{color:#00e69a}
+.lesson-index-done{background:#073d2a}
+.lesson-row-copy strong{color:#f4f6f5}
+.lesson-row-copy small{color:#929894}
+.academy-footer{border-top:1px solid #171b19}
+.auth-page{background:#030504;color:#f7f8f7}
+.auth-story{background:radial-gradient(ellipse at 70% 20%,#073a29,#030504 70%);color:#f7f8f7}
+.auth-panel{background:#030504;color:#f7f8f7}
+.auth-card{background:#080b09;border:1px solid #202822;box-shadow:none}
+.auth-card h2,.auth-card label{color:#f7f8f7}
+.auth-description,.auth-privacy,.auth-copyright{color:#929894}
+.auth-form input{background:#030504;border:1px solid #303832;color:#f7f8f7}
+.auth-submit{background:#f7f8f7;color:#030504;border-radius:999px}
+.auth-submit:hover{background:#00e69a}
+.auth-demo-button{color:#00e69a;border-color:#244a37}
+.auth-switch button{color:#00e69a}
+@media(max-width:760px){
+ .academy-sidebar{background:#050706}
+ .academy-main{padding-bottom:28px}
+ .academy-topbar{min-height:70px}
+ .page-intro{padding-top:16px}
+ .lesson-layout{display:flex;flex-direction:column;gap:18px}
+ .video-panel,.lesson-list{width:100%;min-width:0}
+ .video-screen{aspect-ratio:16/9;min-height:0}
+ .lesson-list{padding:0 14px}
+ .lesson-list-head{padding:22px 0}
+ .lesson-row{min-height:76px;padding:15px 8px}
+ .lesson-row-copy strong{font-size:15px}
+ .professional-course-card{overflow:hidden;border-radius:16px}
+ .course-band{min-height:210px}
+ .auth-page{display:block}
+ .auth-story{display:none}
+ .auth-panel{min-height:100vh;padding:24px 18px}
+ .auth-card{border-radius:24px;padding:28px 22px}
+}
