@@ -11,7 +11,7 @@ export const Route = createFileRoute("/")({ component: Academy });
 
 type User = { name: string; email: string; role?: "admin" | "student" };
 type Lesson = { id: string; title: string; duration: string; url: string; done: boolean };
-type Course = { id: string; title: string; description: string; category: string; lessons: Lesson[] };
+type Course = { id: string; title: string; description: string; category: string; coverUrl?: string; material?: string; lessons: Lesson[] };
 
 const initialCourses: Course[] = [];
 
@@ -37,12 +37,9 @@ function Academy() {
   const [activeLessonId, setActiveLessonId] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const [mobileMenu, setMobileMenu] = useState(false);
-  const [newTitle, setNewTitle] = useState("");
-  const [newDescription, setNewDescription] = useState("");
-  const [newCategory, setNewCategory] = useState("Geral");
-  const [lessonTitle, setLessonTitle] = useState("");
-  const [lessonDuration, setLessonDuration] = useState("10 min");
-  const [lessonUrl, setLessonUrl] = useState("");
+  const [moduleCover, setModuleCover] = useState("");
+  const [moduleMaterial, setModuleMaterial] = useState("");
+  const [moduleLessonUrl, setModuleLessonUrl] = useState("");
   const [notice, setNotice] = useState("");
 
   useEffect(() => {
@@ -119,18 +116,24 @@ function Academy() {
 
   function addCourse(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!newTitle.trim()) return;
-    const course = { id: `course-${Date.now()}`, title: newTitle.trim(), description: newDescription.trim() || "Descrição do curso.", category: newCategory, lessons: [] };
-    setCourses((all) => [course, ...all]); setNewTitle(""); setNewDescription(""); setNotice("Curso criado. Agora adiciona as tuas videoaulas.");
-    setActiveCourseId(course.id); setActiveLessonId(null);
+    if (!moduleCover.trim() || !moduleMaterial.trim() || !moduleLessonUrl.trim()) return;
+    const moduleNumber = courses.length + 1;
+    const moduleTitle = `Módulo ${moduleNumber}`;
+    const lessonId = `lesson-${Date.now()}`;
+    const course: Course = {
+      id: `module-${Date.now()}`, title: moduleTitle,
+      description: moduleMaterial.trim(), material: moduleMaterial.trim(),
+      coverUrl: moduleCover.trim(), category: "Módulo",
+      lessons: [{ id: lessonId, title: "Aula 1", duration: "Videoaula", url: moduleLessonUrl.trim(), done: false }],
+    };
+    setCourses((all) => [course, ...all]);
+    setModuleCover(""); setModuleMaterial(""); setModuleLessonUrl("");
+    setActiveCourseId(course.id); setActiveLessonId(lessonId);
+    setNotice("Módulo adicionado.");
   }
 
   function addLesson(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!activeCourse || !lessonTitle.trim()) return;
-    const lesson = { id: `lesson-${Date.now()}`, title: lessonTitle.trim(), duration: lessonDuration.trim() || "10 min", url: lessonUrl.trim(), done: false };
-    setCourses((all) => all.map((course) => course.id === activeCourse.id ? { ...course, lessons: [...course.lessons, lesson] } : course));
-    setActiveLessonId(lesson.id); setLessonTitle(""); setLessonDuration("10 min"); setLessonUrl(""); setNotice("Videoaula adicionada.");
   }
 
   if (!user) return (
@@ -194,7 +197,7 @@ function Academy() {
             <div className="course-grid">{courses.slice(0, 3).map((course, index) => <CourseCard key={course.id} course={course} index={index} onClick={() => openCourse(course)} />)}</div>
           </>}
           {view === "courses" && <>{activeCourse ? <><button className="back-link" onClick={() => { setActiveCourseId(null); setActiveLessonId(null); }}><ArrowLeft size={16} /> Voltar à biblioteca</button><section className="page-intro compact-intro"><div><span className="section-eyebrow">{activeCourse.category.toUpperCase()}</span><h1>{activeCourse.title}</h1><p>{activeCourse.description}</p></div></section><div className="lesson-layout"><section className="video-panel"><div className="video-screen">{activeLesson?.url ? <VideoEmbed url={activeLesson.url} title={activeLesson.title} /> : <div className="video-placeholder"><span className="video-play"><Play size={26} fill="currentColor" /></span><strong>{activeLesson?.title ?? "As tuas videoaulas"}</strong><p>{activeLesson ? "Adiciona o endereço do vídeo na gestão de conteúdos para o reproduzir aqui." : "Seleciona uma aula na lista para começar."}</p></div>}</div><div className="video-information"><span className="section-eyebrow">AULA DO CURSO</span><h2>{activeLesson?.title ?? "Ainda não há aulas"}</h2><div className="video-actions"><span><Clock3 size={15} /> {activeLesson?.duration ?? "—"}</span>{activeLesson && <button className={activeLesson.done ? "button-complete is-done" : "button-complete"} onClick={markComplete}>{activeLesson.done ? <Check size={16} /> : <Check size={16} />}{activeLesson.done ? "Aula concluída" : "Marcar como concluída"}</button>}</div></div></section><aside className="lesson-list"><div className="lesson-list-head"><div><h3>Conteúdo do curso</h3><p>{activeCourse.lessons.length} aulas</p></div><span>{activeCourse.lessons.filter((lesson) => lesson.done).length}/{activeCourse.lessons.length}</span></div>{activeCourse.lessons.map((lesson, index) => <button key={lesson.id} className={activeLessonId === lesson.id ? "lesson-row lesson-row-active" : "lesson-row"} onClick={() => setActiveLessonId(lesson.id)}><span className={lesson.done ? "lesson-index lesson-index-done" : "lesson-index"}>{lesson.done ? <Check size={15} /> : String(index + 1).padStart(2, "0")}</span><span className="lesson-row-copy"><strong>{lesson.title}</strong><small><Play size={12} /> {lesson.duration}</small></span></button>)}{!activeCourse.lessons.length && <p className="empty-lessons">Ainda não existem aulas neste curso.</p>}</aside></div></> : <><section className="page-intro"><div><span className="section-eyebrow">A TUA BIBLIOTECA</span><h1>Biblioteca de cursos</h1><p>Encontra o curso certo e continua a desenvolver as tuas competências.</p></div></section><label className="course-search"><Search size={18} /><input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Pesquisar cursos..." /></label><div className="course-grid">{filteredCourses.map((course, index) => <CourseCard key={course.id} course={course} index={index} onClick={() => openCourse(course)} />)}{!filteredCourses.length && <div className="empty-library">Não encontrámos cursos com essa pesquisa.</div>}</div></>}</>}
-          {view === "manage" && user.role === "admin" && <><section className="page-intro"><div><span className="section-eyebrow">PAINEL DE CONTEÚDOS</span><h1>Gerir cursos e aulas</h1><p>Organiza os cursos e adiciona os links das tuas videoaulas.</p></div></section><div className="manage-grid"><section className="manage-panel"><div className="manage-panel-title"><span className="manage-icon"><Plus size={19} /></span><div><h2>Criar um curso</h2><p>Define a informação principal do curso.</p></div></div><form className="manage-form" onSubmit={addCourse}><label>Nome do curso<input value={newTitle} onChange={(e) => setNewTitle(e.target.value)} placeholder="Ex.: Marketing digital" required /></label><label>Descrição<textarea value={newDescription} onChange={(e) => setNewDescription(e.target.value)} placeholder="O que o aluno vai aprender?" rows={3} /></label><label>Categoria<select value={newCategory} onChange={(e) => setNewCategory(e.target.value)}><option>Geral</option><option>Tecnologia</option><option>Negócios</option><option>Marketing</option><option>Desenvolvimento</option></select></label><button className="button-primary" type="submit"><Plus size={16} /> Criar curso</button></form></section><section className="manage-panel"><div className="manage-panel-title"><span className="manage-icon"><Video size={19} /></span><div><h2>Adicionar videoaula</h2><p>Associa uma aula a um curso existente.</p></div></div><form className="manage-form" onSubmit={addLesson}><label>Curso<select value={activeCourseId ?? ""} onChange={(e) => { setActiveCourseId(e.target.value || null); setActiveLessonId(null); }} required><option value="">Seleciona um curso</option>{courses.map((course) => <option key={course.id} value={course.id}>{course.title}</option>)}</select></label><label>Nome da aula<input value={lessonTitle} onChange={(e) => setLessonTitle(e.target.value)} placeholder="Ex.: Aula 1 — Introdução" required /></label><label>Duração<input value={lessonDuration} onChange={(e) => setLessonDuration(e.target.value)} placeholder="10 min" /></label><label>Link do vídeo<input type="url" value={lessonUrl} onChange={(e) => setLessonUrl(e.target.value)} placeholder="https://youtube.com/... ou URL MP4" /><small>Compatível com links de YouTube, Vimeo e ficheiros MP4 acessíveis por URL.</small></label><button className="button-primary" type="submit" disabled={!activeCourseId}><Plus size={16} /> Adicionar aula</button></form></section></div><section className="manage-course-list"><div className="content-heading"><div><h2>Os teus cursos</h2><p>{courses.length} cursos na plataforma</p></div></div>{courses.map((course) => <div className="manage-course-row" key={course.id}><span className="manage-course-symbol"><BookOpen size={19} /></span><span className="manage-course-copy"><strong>{course.title}</strong><small>{course.category} · {course.lessons.length} aulas</small></span><button className="text-link" onClick={() => { setActiveCourseId(course.id); setActiveLessonId(course.lessons[0]?.id ?? null); setView("courses"); }}>Ver curso <ArrowRight size={14} /></button></div>)}</section><p className="storage-warning"><LockKeyhole size={15} /> Esta versão é um protótipo: contas, cursos e progresso ficam guardados apenas neste navegador. Para uma plataforma real, é necessário ligar autenticação e base de dados seguras.</p></>}
+          {view === "manage" && user.role === "admin" && <><section className="page-intro"><div><span className="section-eyebrow">PAINEL PRIVADO</span><h1>Adicionar conteúdo</h1><p>Preenche apenas a capa do módulo, a descrição ou material e o link da aula.</p></div></section><div className="manage-grid module-editor-grid"><section className="manage-panel module-editor-panel"><div className="manage-panel-title"><span className="manage-icon"><Plus size={19} /></span><div><h2>Novo módulo</h2><p>Apenas os três campos essenciais.</p></div></div><form className="manage-form module-editor-form" onSubmit={addCourse}><label>Capa do módulo (URL da imagem)<input type="url" value={moduleCover} onChange={(e) => setModuleCover(e.target.value)} placeholder="https://.../capa.jpg" required /></label><label>Descrição ou material<textarea value={moduleMaterial} onChange={(e) => setModuleMaterial(e.target.value)} placeholder="Escreve a descrição ou material do módulo" rows={5} required /></label><label>Link da aula<input type="url" value={moduleLessonUrl} onChange={(e) => setModuleLessonUrl(e.target.value)} placeholder="https://.../video" required /></label><button className="button-primary" type="submit"><Plus size={16} /> Guardar módulo</button></form></section></div><section className="manage-course-list"><div className="content-heading"><div><h2>Os teus módulos</h2><p>{courses.length} módulos adicionados</p></div></div>{courses.map((course) => <div className="manage-course-row" key={course.id}><span className="manage-course-symbol"><BookOpen size={19} /></span><span className="manage-course-copy"><strong>{course.title}</strong><small>{course.lessons.length} aula(s)</small></span><button className="text-link" onClick={() => { setActiveCourseId(course.id); setActiveLessonId(course.lessons[0]?.id ?? null); setView("courses"); }}>Pré-visualizar <ArrowRight size={14} /></button></div>)}{!courses.length && <p className="empty-library">Ainda não adicionaste módulos.</p>}</section><p className="storage-warning"><LockKeyhole size={15} /> Os conteúdos deste protótipo ficam guardados apenas neste navegador.</p></>}
         </div>
         <footer className="academy-footer"><span>© {new Date().getFullYear()} Academia</span><span>Aprende ao teu ritmo.</span></footer>
       </main>
