@@ -33,9 +33,15 @@ type View = "overview" | "courses" | "manage";
 
 function Academy() {
   const [user, setUser] = useState<User | null>(null);
-  const [authMode, setAuthMode] = useState<"signup" | "login">("signup");
+  const [adminMode] = useState(() => typeof window !== "undefined" && new URLSearchParams(window.location.search).get("admin") === "1");
+  const [authMode, setAuthMode] = useState<"signup" | "login">(() => {
+    if (typeof window === "undefined" || new URLSearchParams(window.location.search).get("admin") !== "1") return "signup";
+    try {
+      const accounts = JSON.parse(localStorage.getItem("academy-accounts") || "{}") as Record<string, unknown>;
+      return accounts["admin@academia.local"] ? "login" : "signup";
+    } catch { return "signup"; }
+  });
   const [authError, setAuthError] = useState("");
-  const [adminMode, setAdminMode] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -79,7 +85,10 @@ function Academy() {
     if (password.length < 6) { setAuthError("A palavra-passe deve ter pelo menos 6 caracteres."); return; }
     try {
       const accounts = JSON.parse(localStorage.getItem("academy-accounts") || "{}") as Record<string, { name: string; password: string }>;
+      if (adminMode && cleanEmail !== "admin@academia.local") { setAuthError("Usa o e-mail reservado para o acesso privado de administrador."); return; }
       if (authMode === "signup") {
+        if (!adminMode && cleanEmail === "admin@academia.local") { setAuthError("Este e-mail está reservado ao administrador. Cria a tua conta de aluno com outro e-mail."); return; }
+        if (adminMode && accounts["admin@academia.local"]) { setAuthError("O acesso de administrador já está configurado. Inicia sessão."); return; }
         if (!name.trim()) { setAuthError("Escreve o teu nome."); return; }
         if (accounts[cleanEmail]) { setAuthError("Já existe uma conta com este e-mail. Inicia sessão."); return; }
         accounts[cleanEmail] = { name: name.trim(), password };
@@ -87,7 +96,6 @@ function Academy() {
       } else {
         if (!accounts[cleanEmail] || accounts[cleanEmail].password !== password) { setAuthError("E-mail ou palavra-passe incorretos."); return; }
       }
-      if (adminMode && cleanEmail !== "admin@academia.local") { setAuthError("Esta conta não tem permissões de administrador."); return; }
       const nextUser = { name: accounts[cleanEmail].name, email: cleanEmail, role: cleanEmail === "admin@academia.local" ? "admin" as const : "student" as const };
       localStorage.setItem("academy-user", JSON.stringify(nextUser));
       setUser(nextUser);
@@ -98,7 +106,7 @@ function Academy() {
 
   function signOut() {
     localStorage.removeItem("academy-user");
-    setUser(null); setAuthMode("login"); setAdminMode(false); setView("overview");
+    setUser(null); setAuthMode("login"); setView("overview");
     setActiveCourseId(null); setActiveLessonId(null);
   }
 
@@ -145,18 +153,19 @@ function Academy() {
         <div className="auth-mobile-brand"><span className="brand-icon"><GraduationCap size={22} /></span><strong>ACADEMIA</strong></div>
         <div className="auth-card">
           <span className="auth-kicker">{authMode === "signup" ? "COMEÇA A TUA JORNADA" : "BEM-VINDO DE VOLTA"}</span>
-          <h2>{adminMode ? "Acesso de administrador" : authMode === "signup" ? "Cria a tua conta" : "Inicia sessão"}</h2>
-          <p className="auth-description">{adminMode ? "Entra com a conta de administrador para gerir cursos e videoaulas." : authMode === "signup" ? "Regista-te para entrares na tua área de membros." : "Entra na tua conta para continuares a aprender."}</p>
+          <h2>{adminMode ? (authMode === "signup" ? "Configura o teu acesso privado" : "Acesso privado do administrador") : authMode === "signup" ? "Cria a tua conta" : "Inicia sessão"}</h2>
+          <p className="auth-description">{adminMode ? (authMode === "signup" ? "Configura aqui a tua conta privada de administrador. Esta opção não aparece aos alunos." : "Inicia sessão para gerir os cursos e as videoaulas.") : authMode === "signup" ? "Regista-te para entrares na tua área de membros." : "Entra na tua conta para continuares a aprender."}</p>
           <form className="auth-form" onSubmit={submitAuth}>
-            {authMode === "signup" && !adminMode && <label>Nome completo<input autoComplete="name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Como te chamas?" required /></label>}
-            <label>E-mail<input type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder={adminMode ? "E-mail de administrador" : "nome@exemplo.com"} required /></label>
+            {authMode === "signup" && <label>Nome completo<input autoComplete="name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Como te chamas?" required /></label>}
+            <label>E-mail<input type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder={adminMode ? "O teu e-mail privado" : "nome@exemplo.com"} required /></label>
             <label>Palavra-passe<input type="password" autoComplete={authMode === "signup" ? "new-password" : "current-password"} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Mínimo de 6 caracteres" minLength={6} required /></label>
             {authError && <p className="auth-error" role="alert">{authError}</p>}
-            <button className="auth-submit" type="submit">{adminMode ? "Entrar no painel de administrador" : authMode === "signup" ? "Criar conta" : "Entrar na área de membros"} <ArrowRight size={17} /></button>
+            <button className="auth-submit" type="submit">{adminMode ? (authMode === "signup" ? "Configurar acesso privado" : "Entrar no painel privado") : authMode === "signup" ? "Criar conta" : "Entrar na área de membros"} <ArrowRight size={17} /></button>
           </form>
-          <button className="auth-demo-button" type="button" onClick={() => { setUser({ name: "Visitante", email: "demo@academia.local", role: "student" }); setView("overview"); setAuthError(""); }}>Explorar demonstração sem criar conta <ArrowRight size={16} /></button>
-          <button className="auth-admin-link" type="button" onClick={() => setAdminMode(!adminMode)}>{adminMode ? "Voltar ao acesso de aluno" : "Acesso de administrador"}</button>
-          <div className="auth-switch">{authMode === "signup" ? "Já tens conta?" : "Ainda não tens conta?"} <button onClick={() => { setAuthMode(authMode === "signup" ? "login" : "signup"); setAuthError(""); }}>{authMode === "signup" ? "Inicia sessão" : "Criar conta"}</button></div>
+          {!adminMode && <>
+            <button className="auth-demo-button" type="button" onClick={() => { setUser({ name: "Visitante", email: "demo@academia.local", role: "student" }); setView("overview"); setAuthError(""); }}>Explorar demonstração sem criar conta <ArrowRight size={16} /></button>
+            <div className="auth-switch">{authMode === "signup" ? "Já tens conta?" : "Ainda não tens conta?"} <button onClick={() => { setAuthMode(authMode === "signup" ? "login" : "signup"); setAuthError(""); }}>{authMode === "signup" ? "Inicia sessão" : "Criar conta"}</button></div>
+          </>}
           <div className="auth-privacy"><LockKeyhole size={14} /> A tua aprendizagem começa num espaço dedicado.</div>
         </div>
         <p className="auth-copyright">© {new Date().getFullYear()} Academia. Todos os direitos reservados.</p>
