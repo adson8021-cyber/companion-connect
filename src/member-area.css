@@ -93,3 +93,5 @@ body{background:#030504;color:#f5f7f6}
  .auth-panel{min-height:100vh;padding:24px 18px}
  .auth-card{border-radius:24px;padding:28px 22px}
 }
+
+.module-editor-grid{grid-template-columns:minmax(0,680px);justify-content:start}.module-editor-panel{width:100%;max-width:680px}.module-editor-form{gap:22px}.module-editor-form label{gap:9px}.module-editor-form input,.module-editor-form textarea{font-size:14px;padding:14px 15px}.module-editor-form textarea{resize:vertical;min-height:125px}.course-band-with-cover{background-position:center;background-size:cover;background-repeat:no-repeat}.course-band-with-cover:after{opacity:.15}@media(max-width:760px){.module-editor-grid{display:block}.module-editor-panel{max-width:none}.module-editor-form{gap:18px}}
