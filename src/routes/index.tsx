@@ -13,21 +13,7 @@ type User = { name: string; email: string; role?: "admin" | "student" };
 type Lesson = { id: string; title: string; duration: string; url: string; done: boolean };
 type Course = { id: string; title: string; description: string; category: string; lessons: Lesson[] };
 
-const initialCourses: Course[] = [
-  { id: "digital", title: "Fundamentos do mundo digital", description: "Aprende os conceitos essenciais e constrói uma base sólida para os teus próximos projetos.", category: "Tecnologia", lessons: [
-    { id: "d1", title: "Introdução ao curso", duration: "08 min", url: "", done: false },
-    { id: "d2", title: "Ferramentas essenciais", duration: "14 min", url: "", done: false },
-    { id: "d3", title: "Plano de ação", duration: "11 min", url: "", done: false },
-  ] },
-  { id: "business", title: "Negócios e empreendedorismo", description: "Transforma uma ideia num plano prático, com objetivos e prioridades claras.", category: "Negócios", lessons: [
-    { id: "b1", title: "Da ideia à oportunidade", duration: "12 min", url: "", done: false },
-    { id: "b2", title: "Define o teu modelo de negócio", duration: "18 min", url: "", done: false },
-  ] },
-  { id: "productivity", title: "Produtividade profissional", description: "Organiza tarefas, protege o teu foco e trabalha com mais intenção.", category: "Desenvolvimento", lessons: [
-    { id: "p1", title: "Organização e foco", duration: "09 min", url: "", done: false },
-    { id: "p2", title: "Constrói uma rotina sustentável", duration: "16 min", url: "", done: false },
-  ] },
-];
+const initialCourses: Course[] = [];
 
 type View = "overview" | "courses" | "manage";
 
@@ -64,7 +50,7 @@ function Academy() {
       const savedUser = localStorage.getItem("academy-user");
       const savedCourses = localStorage.getItem("academy-courses");
       if (savedUser && !adminMode) setUser(JSON.parse(savedUser) as User);
-      if (savedCourses) setCourses(JSON.parse(savedCourses) as Course[]);
+      if (savedCourses) setCourses(JSON.parse(savedCourses) as Course[]); else setCourses([]);
     } catch { /* Keeps the initial experience available if storage is disabled. */ }
   }, []);
 
