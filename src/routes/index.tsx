@@ -63,7 +63,7 @@ function Academy() {
     try {
       const savedUser = localStorage.getItem("academy-user");
       const savedCourses = localStorage.getItem("academy-courses");
-      if (savedUser) setUser(JSON.parse(savedUser) as User);
+      if (savedUser && !adminMode) setUser(JSON.parse(savedUser) as User);
       if (savedCourses) setCourses(JSON.parse(savedCourses) as Course[]);
     } catch { /* Keeps the initial experience available if storage is disabled. */ }
   }, []);
