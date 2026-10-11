@@ -50,7 +50,17 @@ function Academy() {
       const savedUser = localStorage.getItem("academy-user");
       const savedCourses = localStorage.getItem("academy-courses");
       if (savedUser && !adminMode) setUser(JSON.parse(savedUser) as User);
-      if (savedCourses) setCourses(JSON.parse(savedCourses) as Course[]); else setCourses([]);
+      // Remove fictional starter/demo courses from old browser storage as well as the initial state.
+      if (savedCourses) {
+        const parsedCourses = JSON.parse(savedCourses) as Course[];
+        const demoIds = new Set(["digital", "business", "productivity"]);
+        const demoTitles = new Set(["Fundamentos do mundo digital", "Negócios e empreendedorismo", "Produtividade profissional"]);
+        const cleanedCourses = parsedCourses.filter((course) => !demoIds.has(course.id) && !demoTitles.has(course.title));
+        setCourses(cleanedCourses);
+        localStorage.setItem("academy-courses", JSON.stringify(cleanedCourses));
+      } else {
+        setCourses([]);
+      }
     } catch { /* Keeps the initial experience available if storage is disabled. */ }
   }, []);
 
